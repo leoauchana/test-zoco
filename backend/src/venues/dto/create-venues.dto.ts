@@ -6,7 +6,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-export class CreateVenuesDto {
+export class CreateVenueDto {
   @IsString()
   @IsNotEmpty({ message: 'The name is required' })
   @MinLength(3, { message: 'The name must be at least 3 characters long' })

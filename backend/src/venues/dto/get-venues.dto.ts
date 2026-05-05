@@ -1,4 +1,4 @@
-export class GetVenuesDto {
+export class Venue {
   name: string;
   location: string;
   font: string;

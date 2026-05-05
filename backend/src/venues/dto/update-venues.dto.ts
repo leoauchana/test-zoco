@@ -5,7 +5,7 @@ import { MinLength } from 'class-validator/types/decorator/string/MinLength';
 import { IsBoolean } from 'class-validator/types/decorator/typechecker/IsBoolean';
 import { IsString } from 'class-validator/types/decorator/typechecker/IsString';
 
-export class UpdateVenuesDto {
+export class UpdateVenueDto {
   @IsString()
   @IsOptional()
   @MinLength(3, { message: 'El nombre debe tener al menos 3 caracteres' })
