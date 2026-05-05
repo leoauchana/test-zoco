@@ -1,0 +1,16 @@
+{
+  "workbench.iconTheme": "symbols",
+  "symbols.files.associations": {
+    "*.module.ts": "typescript",
+    "*.service.ts": "typescript",
+    "*.controller.ts": "typescript",
+    "*.entity.ts": "typescript",
+    "*.dto.ts": "typescript",
+    "*.guard.ts": "typescript",
+    "*.interceptor.ts": "typescript",
+    "*.decorator.ts": "typescript",
+    "*.pipe.ts": "typescript",
+    "*.filter.ts": "typescript",
+    "*.spec.ts": "typescript"
+  }
+}
