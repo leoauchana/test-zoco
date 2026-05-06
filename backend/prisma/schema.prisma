@@ -15,26 +15,26 @@ datasource db {
 }
 
 model Venue {
-  id              String   @id @default(uuid())
-  nombre          String
-  ubicacion       String?
-  categoria       String?
-  descripcion     String?
-  fuente          String   @default("mock")
-  activo          Boolean  @default(true)
-  fechaObtencion  DateTime @default(now()) @map("fecha_obtencion")
-  createdAt       DateTime @default(now()) @map("created_at")
-  updatedAt       DateTime @updatedAt @map("updated_at")
+  id          String   @id @default(uuid())
+  name        String
+  location    String
+  category    String
+  description String
+  source      String   @default("manual")
+  active      Boolean  @default(true)
+  obtainedAt  DateTime @default(now()) @map("obtained_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
   @@map("venues")
 }
 
 model Log {
-  id          String   @id @default(uuid())
-  accion      String
-  nuevos      Int      @default(0)
-  duplicados  Int      @default(0)
-  ejecutadoAt DateTime @default(now()) @map("ejecutado_at")
+  id         String   @id @default(uuid())
+  action     String
+  newCount   Int      @default(0) @map("new_count")
+  duplicates Int      @default(0)
+  executedAt DateTime @default(now()) @map("executed_at")
 
   @@map("logs")
 }

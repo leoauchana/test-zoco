@@ -1,9 +1,10 @@
-export class Venue {
+export class VenueResponseDto {
+  id: string;
   name: string;
   location: string;
-  source: string;
-  description: string;
   category: string;
+  description: string;
+  source: string;
   active: boolean;
   obtainedAt: Date;
 }

@@ -1,11 +1,31 @@
-import { Venue } from '@prisma/client';
 import { CreateVenueDto } from '../dto/create-venues.dto';
+import { VenueResponseDto } from '../dto/response-venues.dto';
 import { UpdateVenueDto } from '../dto/update-venues.dto';
 
 export interface IVenuesService {
-  findAll(): Promise<Venue[]>;
-  findOne(id: string): Promise<Venue>;
-  create(data: CreateVenueDto): Promise<Venue>;
-  update(id: string, data: UpdateVenueDto): Promise<Venue>;
-  softDelete(id: string): Promise<Venue>;
+  findByCategory(
+    category: string,
+    page?: number,
+    limit?: number,
+  ): Promise<VenueResponseDto[]>;
+  findAll(
+    page?: number,
+    limit?: number,
+    actives?: boolean,
+  ): Promise<VenueResponseDto[]>;
+
+  findByCategory(
+    category: string,
+    page?: number,
+    limit?: number,
+    actives?: boolean,
+  ): Promise<VenueResponseDto[]>;
+
+  findOne(id: string): Promise<VenueResponseDto>;
+
+  create(data: CreateVenueDto): Promise<VenueResponseDto>;
+
+  update(id: string, data: UpdateVenueDto): Promise<VenueResponseDto>;
+
+  softDelete(id: string): Promise<VenueResponseDto>;
 }
