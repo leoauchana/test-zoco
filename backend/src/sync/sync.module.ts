@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AiModule } from 'src/ai/ai.module';
 import { LogsModule } from 'src/logs/logs.module';
 import { VenuesModule } from 'src/venues/venues.module';
+import { SYNC_SERVICE } from './sync.constants';
 import { SyncController } from './sync.controller';
 import { SyncService } from './sync.service';
 
@@ -9,7 +10,7 @@ import { SyncService } from './sync.service';
   controllers: [SyncController],
   providers: [
     {
-      provide: 'ISyncService',
+      provide: SYNC_SERVICE,
       useClass: SyncService,
     },
   ],

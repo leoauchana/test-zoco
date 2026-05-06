@@ -9,14 +9,15 @@ import { Venue } from '@prisma/client';
 import { CreateVenueDto } from './dto/create-venues.dto';
 import { VenueResponseDto } from './dto/response-venues.dto';
 import { UpdateVenueDto } from './dto/update-venues.dto';
-import type { IVenuesRepository } from './interfaces/venues.repository.interface';
+import { IVenuesRepository } from './interfaces/venues.repository.interface';
 import { IVenuesService } from './interfaces/venues.service.interface';
 import { VenuesMapper } from './mappers/venue.mapper';
+import { VENUES_REPOSITORY } from './venues.constants';
 
 @Injectable()
 export class VenuesService implements IVenuesService {
   constructor(
-    @Inject('IVenuesRepository')
+    @Inject(VENUES_REPOSITORY)
     private readonly venuesRepository: IVenuesRepository,
     private readonly venueMapper: VenuesMapper,
   ) {}

@@ -1,9 +1,11 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { AiService } from 'src/ai/ai.service';
-import type { ILogsService } from 'src/logs/interfaces/logs.service.interface';
-import { CreateVenueDto } from 'src/venues/dto/create-venues.dto';
-import type { IVenuesService } from 'src/venues/interfaces/venues.service.interface';
+import { AiService } from '../ai/ai.service';
+import { ILogsService } from '../logs/interfaces/logs.service.interface';
+import { LOGS_SERVICE } from '../logs/logs.constants';
+import { CreateVenueDto } from '../venues/dto/create-venues.dto';
+import { IVenuesService } from '../venues/interfaces/venues.service.interface';
+import { VENUES_SERVICE } from '../venues/venues.constants';
 import { VENUES_MOCK } from './data/venues.mock';
 import { ISyncService } from './interfaces/sync.service.interface';
 
@@ -12,9 +14,9 @@ export class SyncService implements ISyncService {
   private readonly logger = new Logger(SyncService.name);
 
   constructor(
-    @Inject('IVenuesService')
+    @Inject(VENUES_SERVICE)
     private readonly venuesService: IVenuesService,
-    @Inject('ILogsService')
+    @Inject(LOGS_SERVICE)
     private readonly logsService: ILogsService,
     private readonly aiService: AiService,
   ) {}
@@ -30,8 +32,6 @@ export class SyncService implements ISyncService {
 
     let news = 0;
     let duplicates = 0;
-
-    // Traer todos los venues existentes para comparar
 
     const existings = await this.venuesService.findAll();
 
@@ -49,27 +49,11 @@ export class SyncService implements ISyncService {
         mock.location,
         venuesForCheck,
       );
-      // 1. Detectar duplicado con IA
-      // const isDuplicate = await this.aiService.detectDuplicate(
-      //   mock.name,
-      //   venuesForCheck,
-      // );
 
-      // if (isDuplicate) {
-      //   this.logger.warn(`Duplicado detectado: ${mock.name}`);
-      //   duplicates++;
-      //   continue;
-      // }
       if (analysis.isDuplicate && analysis.confidence !== 'low') {
         duplicates++;
         continue;
       }
-
-      // 2. Clasificar con IA
-      // const clasification = await this.aiService.classify(
-      //   mock.name,
-      //   mock.location,
-      // );
 
       const newVenue: CreateVenueDto = {
         name: mock.name,
@@ -79,14 +63,12 @@ export class SyncService implements ISyncService {
         description: analysis.description,
       };
 
-      // 3. Guardar en BD
       await this.venuesService.create(newVenue);
 
       this.logger.log(`New venue added: ${mock.name}`);
       news++;
     }
 
-    // 4. Guardar log
     await this.logsService.create('sync', news, duplicates);
 
     this.logger.log(`Sync completo: ${news} nuevos, ${duplicates} duplicados`);

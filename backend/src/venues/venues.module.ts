@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from 'src/database/database.module';
 import { VenuesMapper } from './mappers/venue.mapper';
+import { VENUES_REPOSITORY, VENUES_SERVICE } from './venues.constants';
 import { VenuesController } from './venues.controller';
 import { VenuesRepository } from './venues.repository';
 import { VenuesService } from './venues.service';
@@ -11,14 +12,14 @@ import { VenuesService } from './venues.service';
   providers: [
     VenuesMapper,
     {
-      provide: 'IVenuesService',
+      provide: VENUES_SERVICE,
       useClass: VenuesService,
     },
     {
-      provide: 'IVenuesRepository',
+      provide: VENUES_REPOSITORY,
       useClass: VenuesRepository,
     },
   ],
-  exports: ['IVenuesService'],
+  exports: [VENUES_SERVICE, VENUES_REPOSITORY],
 })
 export class VenuesModule {}
