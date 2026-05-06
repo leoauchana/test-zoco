@@ -1,5 +1,5 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
 import { Injectable, Logger } from '@nestjs/common';
+import Groq from 'groq-sdk';
 
 interface Classification {
   category: string;
@@ -11,84 +11,82 @@ interface ExistingVenue {
   name: string;
 }
 
+interface VenueAnalysis extends Classification {
+  isDuplicate: boolean;
+  confidence: string;
+}
+
 @Injectable()
 export class AiService {
   private readonly logger = new Logger(AiService.name);
-  private readonly model;
+  private readonly groq: Groq;
 
   constructor() {
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY ?? '');
-    this.model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    this.groq = new Groq({
+      apiKey: process.env.GROQ_API_KEY,
+    });
   }
 
-  async detectDuplicate(
-    newName: string,
-    existingVenues: ExistingVenue[],
-  ): Promise<boolean> {
-    if (existingVenues.length === 0) return false;
+  private cleanJson(text: string): string {
+    return text
+      .replace(/```json/g, '')
+      .replace(/```/g, '')
+      .trim();
+  }
 
+  async analyzeVenue(
+    newName: string,
+    location: string,
+    existingVenues: ExistingVenue[],
+  ): Promise<VenueAnalysis> {
     const prompt = `
-Tenés esta lista de bares/venues ya registrados:
+Tenés esta lista de venues ya registrados:
 ${JSON.stringify(existingVenues.map((v) => v.name))}
 
-¿El siguiente venue es probable duplicado de alguno de la lista?
-Nuevo venue: "${newName}"
+Analizá este nuevo venue:
 
-Considerá duplicados aunque el nombre esté en distinto orden, 
-tenga palabras extra o falten palabras. 
-Ejemplos: "Bar Irlanda" y "Irlanda Bar" son duplicados.
-         "El Cairo" y "Bar El Cairo" son duplicados.
-
-Respondé ÚNICAMENTE con un JSON sin texto adicional ni backticks:
-{
-  "esDuplicado": true o false,
-  "confianza": "alta", "media" o "baja"
-}
-    `;
-
-    try {
-      const result = await this.model.generateContent(prompt);
-      const text = result.response.text();
-      const parsed = JSON.parse(text) as {
-        isDuplicate: boolean;
-        confidence: string;
-      };
-
-      this.logger.log(
-        `Duplicado check "${newName}": ${parsed.isDuplicate} (confianza: ${parsed.confidence})`,
-      );
-
-      return parsed.isDuplicate && parsed.confidence !== 'baja';
-    } catch (error) {
-      this.logger.error(`Error detectando duplicado: ${String(error)}`);
-      return false;
-    }
-  }
-
-  async classify(name: string, location: string): Promise<Classification> {
-    const prompt = `
-Dado este bar/venue de Tucumán, Argentina:
-Nombre: "${name}"
+Nombre: "${newName}"
 Dirección: "${location}"
 
-Clasificalo y generá una descripción breve.
-Categorías posibles: bar, boliche, café, restaurante, peña, resto-bar, otro
+1. Detectá si es duplicado.
+2. Si no lo es, clasificá el venue.
 
-Respondé ÚNICAMENTE con un JSON sin texto adicional ni backticks:
+Categorías posibles:
+bar, boliche, café, restaurante, peña, resto-bar, otro
+
+Respondé SOLO con JSON:
+
 {
-  "category": "una de las categorías de arriba",
-  "description": "descripción breve de máximo 2 oraciones sobre el lugar"
+  "isDuplicate": true o false,
+  "confidence": "high|medium|low",
+  "category": "categoría",
+  "description": "descripción breve"
 }
-    `;
+`;
 
     try {
-      const result = await this.model.generateContent(prompt);
-      const text = result.response.text();
-      const parsed = JSON.parse(text) as Classification;
-      return parsed;
+      const response = await this.groq.chat.completions.create({
+        model: process.env.GROQ_MODEL ?? 'llama-3.1-8b-instant',
+        temperature: 0.1,
+        messages: [
+          {
+            role: 'user',
+            content: prompt,
+          },
+        ],
+      });
+
+      const content = response.choices[0]?.message?.content ?? '';
+
+      const cleanText = this.cleanJson(content);
+
+      return JSON.parse(cleanText) as VenueAnalysis;
     } catch (error) {
-      this.logger.error(`Error clasificando venue: ${String(error)}`);
+      this.logger.error(`Error Groq: ${String(error)}`);
+
       return {
+        isDuplicate: false,
+        confidence: 'low',
         category: 'otro',
         description: 'Sin descripción disponible.',
       };
