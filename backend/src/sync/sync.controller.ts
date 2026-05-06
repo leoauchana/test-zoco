@@ -1,9 +1,12 @@
-import { Controller, Get, Post } from '@nestjs/common';
-import { SyncService } from './sync.service';
+import { Controller, Get, Inject, Post } from '@nestjs/common';
+import type { ISyncService } from './interfaces/sync.service.interface';
 
 @Controller('sync')
 export class SyncController {
-  constructor(private readonly syncService: SyncService) {}
+  constructor(
+    @Inject('ISyncService')
+    private readonly syncService: ISyncService,
+  ) {}
 
   @Post()
   async runSync() {
