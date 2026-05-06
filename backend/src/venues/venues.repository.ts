@@ -16,7 +16,10 @@ export class VenuesRepository implements IVenuesRepository {
   ): Promise<Venue[]> {
     return this.databaseService.venue.findMany({
       where: {
-        category,
+        category: {
+          equals: category,
+          mode: 'insensitive',
+        },
         active: actives !== undefined ? actives : undefined,
       },
       skip: page && limit ? (page - 1) * limit : undefined,

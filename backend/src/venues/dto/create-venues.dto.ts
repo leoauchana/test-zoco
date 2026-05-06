@@ -32,5 +32,5 @@ export class CreateVenueDto {
 
   @IsString()
   @IsNotEmpty({ message: 'The source is required' })
-  source: string = 'Manual';
+  source: string;
 }

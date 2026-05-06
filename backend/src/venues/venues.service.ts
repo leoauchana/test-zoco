@@ -49,7 +49,7 @@ export class VenuesService implements IVenuesService {
     );
 
     if (venues.length === 0) {
-      throw new NotFoundException(`No venues found in category "${category}"`);
+      return [];
     }
 
     return this.venueMapper.toPrismaToResponseArray(venues);

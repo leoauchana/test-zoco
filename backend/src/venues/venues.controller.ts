@@ -25,6 +25,7 @@ export class VenuesController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createVenueDto: CreateVenueDto) {
+    console.log('Creating venue...');
     return {
       data: await this.venuesService.create(createVenueDto),
       message: 'Local creado exitosamente',

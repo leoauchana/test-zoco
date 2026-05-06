@@ -19,5 +19,6 @@ import { VenuesService } from './venues.service';
       useClass: VenuesRepository,
     },
   ],
+  exports: ['IVenuesService'],
 })
 export class VenuesModule {}
