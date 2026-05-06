@@ -26,6 +26,7 @@ export class VenuesService implements IVenuesService {
     limit: number = 10,
     actives?: boolean,
   ): Promise<VenueResponseDto[]> {
+    console.log(page, limit, actives);
     this.validatePagination(page, limit);
     const venues = await this.venuesRepository.findAll(page, limit, actives);
     return this.venueMapper.toPrismaToResponseArray(venues);

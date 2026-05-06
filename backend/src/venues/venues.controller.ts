@@ -6,12 +6,12 @@ import {
   HttpStatus,
   Inject,
   Param,
-  ParseIntPipe,
   Patch,
   Post,
   Query,
 } from '@nestjs/common';
 import { CreateVenueDto } from './dto/create-venues.dto';
+import { QueryVenuesDto } from './dto/query-vanues.dto';
 import { UpdateVenueDto } from './dto/update-venues.dto';
 import type { IVenuesService } from './interfaces/venues.service.interface';
 
@@ -26,20 +26,16 @@ export class VenuesController {
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createVenueDto: CreateVenueDto) {
     return {
-      success: true,
       data: await this.venuesService.create(createVenueDto),
       message: 'Local creado exitosamente',
     };
   }
 
   @Get()
-  async findAll(
-    @Query('page', ParseIntPipe) page: number,
-    @Query('limit', ParseIntPipe) limit: number,
-    @Query('activos') activos?: string,
-  ) {
+  async findAll(@Query() queryDto: QueryVenuesDto) {
+    const { page, limit, actives } = queryDto;
     const activosFilter =
-      activos === 'true' ? true : activos === 'false' ? false : undefined;
+      actives === 'true' ? true : actives === 'false' ? false : undefined;
     return {
       success: true,
       data: await this.venuesService.findAll(page, limit, activosFilter),
@@ -48,20 +44,19 @@ export class VenuesController {
 
   @Get('category/:categoria')
   async findByCategory(
-    @Param('categoria') categoria: string,
-    @Query('page', ParseIntPipe) page: number,
-    @Query('limit', ParseIntPipe) limit: number,
+    @Param('categoria') category: string,
+    @Query() queryDto: QueryVenuesDto,
   ) {
+    const { page, limit } = queryDto;
     return {
       success: true,
-      data: await this.venuesService.findByCategory(categoria, page, limit),
+      data: await this.venuesService.findByCategory(category, page, limit),
     };
   }
 
   @Get(':id')
   async findById(@Param('id') id: string) {
     return {
-      success: true,
       data: await this.venuesService.findOne(id),
     };
   }
@@ -72,7 +67,6 @@ export class VenuesController {
     @Body() updateVenueDto: UpdateVenueDto,
   ) {
     return {
-      success: true,
       data: await this.venuesService.update(id, updateVenueDto),
       message: 'Local actualizado exitosamente',
     };
@@ -82,7 +76,6 @@ export class VenuesController {
   async desactivate(@Param('id') id: string) {
     await this.venuesService.softDelete(id);
     return {
-      success: true,
       message: 'Venue deleted successfully',
     };
   }

@@ -1,9 +1,11 @@
 import { Type } from 'class-transformer';
-import { IsOptional } from 'class-validator/types/decorator/common/IsOptional';
-import { MaxLength } from 'class-validator/types/decorator/string/MaxLength';
-import { MinLength } from 'class-validator/types/decorator/string/MinLength';
-import { IsBoolean } from 'class-validator/types/decorator/typechecker/IsBoolean';
-import { IsString } from 'class-validator/types/decorator/typechecker/IsString';
+import {
+  IsBoolean,
+  IsOptional,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 
 export class UpdateVenueDto {
   @IsString()
