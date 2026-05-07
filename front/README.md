@@ -1,73 +1,172 @@
-# React + TypeScript + Vite
+# Frontend - Dashboard de Bares
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Dashboard web desarrollado con **React + TypeScript + Vite** para visualizar y administrar los bares de la provincia de Tucumán. Se comunica con el backend NestJS para gestionar bares, disparar sincronizaciones y consultar logs.
 
-Currently, two official plugins are available:
+<p align="center">
+  <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React" />
+  <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
+</p>
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## Tecnologías
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| Tecnología | Uso |
+|---|---|
+| [React](https://react.dev/) | Biblioteca de UI |
+| [TypeScript](https://www.typescriptlang.org/) | Lenguaje tipado |
+| [Vite](https://vitejs.dev/) | Build tool y dev server |
+| CSS Vanilla | Estilos de componentes |
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Estructura del Proyecto
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+src/
+├── components/
+│   ├── Dashboard/
+│   │   ├── Dashboard.tsx          # Componente principal
+│   │   └── Dashboard.css
+│   ├── Header/
+│   │   ├── Header.tsx             # Cabecera del dashboard
+│   │   └── Header.css
+│   ├── LogsTab/
+│   │   ├── LogsTab.tsx            # Pestaña de logs
+│   │   ├── LogsList.tsx           # Lista de logs
+│   │   └── LogsTab.css
+│   ├── Shared/
+│   │   ├── ConfirmationModal.tsx  # Modal de confirmación
+│   │   ├── LoadingSpinner.tsx     # Spinner de carga
+│   │   ├── Toast.tsx              # Notificaciones toast
+│   │   └── Shared.css
+│   ├── TabNavigation/
+│   │   ├── TabNavigation.tsx      # Navegación por pestañas
+│   │   └── TabNavigation.css
+│   └── VenuesTab/
+│       ├── VenuesTab.tsx          # Pestaña de bares
+│       ├── VenuesList.tsx         # Lista de bares
+│       ├── VenuesFilters.tsx      # Filtros de búsqueda
+│       ├── VenuePagination.tsx    # Paginación
+│       ├── EditVenueModal.tsx     # Modal de edición
+│       └── VenuesTab.css
+├── contexts/
+│   └── TabContext.tsx             # Estado global de tabs
+├── hooks/
+│   ├── useLocalStorage.ts         # Persistencia en localStorage
+│   ├── useLogs.ts                 # Lógica de logs
+│   ├── useSyncStatus.ts           # Estado de sincronización
+│   ├── useTabContext.ts           # Hook para contexto de tabs
+│   ├── useToast.ts                # Gestión de notificaciones
+│   └── useVenues.ts               # Lógica de bares
+├── services/
+│   ├── api.ts                     # Cliente HTTP base
+│   ├── logsService.ts             # Servicio de logs
+│   ├── syncService.ts             # Servicio de sync
+│   └── venuesService.ts           # Servicio de bares
+├── types/
+│   └── index.ts                   # Tipos TypeScript
+├── utils/
+│   ├── constants.ts               # Constantes de la app
+│   ├── formatters.ts              # Funciones de formato
+│   └── validators.ts              # Validaciones de formularios
+├── assets/
+│   ├── hero.png
+│   ├── react.svg
+│   └── vite.svg
+├── App.tsx
+├── App.css
+├── main.tsx
+└── index.css
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Características
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Gestión de Bares (VenuesTab)
+
+- Visualización de bares en lista
+- Filtros por estado
+- Paginación de resultados
+- Edición de bares mediante modal
+- Soft delete (desactivación)
+
+### Historial de Sincronizaciones (LogsTab)
+
+- Lista de ejecuciones del sync
+- Detalle de bares nuevos y duplicados
+- Timestamp de cada ejecución
+
+### Componentes Compartidos (Shared)
+
+- **ConfirmationModal**: Modal reutilizable para confirmar acciones
+- **LoadingSpinner**: Indicador de carga
+- **Toast**: Notificaciones de éxito/error
+
+### Navegación por Pestañas
+
+- Sistema de tabs para alternar entre Venues y Logs
+- Estado global manejado con React Context (`TabContext`)
+
+---
+
+## Arquitectura
+
 ```
+Components → Hooks → Services → API
+                ↓
+           Context (TabContext)
+                ↓
+           Types + Utils
+```
+
+- **Custom Hooks**: Lógica de negocio separada de la UI
+- **Services**: Capa de comunicación con la API
+- **Context**: Estado global para navegación por tabs
+- **Types**: Definiciones TypeScript centralizadas
+- **Utils**: Constantes, formatters y validadores reutilizables
+
+---
+
+## Instalación
+
+```bash
+npm install
+```
+
+## Ejecución
+
+```bash
+# Desarrollo (con hot reload)
+npm run dev
+
+# Build para producción
+npm run build
+
+# Preview del build
+npm run preview
+```
+
+## Lint
+
+```bash
+npm run lint
+```
+
+---
+
+## Variables de Entorno
+
+Crear un archivo `.env` en la raíz del frontend:
+
+```env
+VITE_API_URL=http://localhost:3000
+```
+
+---
+
+## Autor
+
+**Auchana Matías Leonel** - Estudiante de Ingeniería en Sistemas de Información
