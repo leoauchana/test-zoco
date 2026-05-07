@@ -1,98 +1,286 @@
+# Backend - Sistema de Gestión de Bares
+
+API REST desarrollada con **NestJS** para la gestión automatizada de bares de la provincia de Tucumán, Argentina. El sistema obtiene datos desde una fuente mock, los procesa con IA para clasificarlos y detectar duplicados, y los expone mediante endpoints consumidos por un dashboard web.
+
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
+  <img src="https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white" alt="NestJS" />
+  <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white" alt="Prisma" />
+  <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+  <img src="https://img.shields.io/badge/Groq-000000?style=for-the-badge&logo=groq&logoColor=white" alt="Groq" />
+  <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+---
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Tecnologías
 
-## Description
+| Tecnología | Uso |
+|---|---|
+| [NestJS](https://nestjs.com/) | Framework principal |
+| [TypeScript](https://www.typescriptlang.org/) | Lenguaje tipado |
+| [Prisma ORM](https://www.prisma.io/) | Acceso a base de datos |
+| [PostgreSQL](https://www.postgresql.org/) (Supabase) | Base de datos relacional |
+| [Groq API](https://groq.com/) | Clasificación y detección de duplicados con IA |
+| [@nestjs/schedule](https://docs.nestjs.com/techniques/task-scheduling) | Cron jobs automáticos |
+| [class-validator](https://github.com/typestack/class-validator) | Validación de DTOs |
+| [class-transformer](https://github.com/typestack/class-transformer) | Transformación de datos |
+| [Docker](https://www.docker.com/) | Contenedorización |
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+---
 
-## Project setup
+## Estructura del Proyecto
 
-```bash
-$ npm install
+```
+src/
+├── ai/                          # Módulo de IA (Groq)
+│   ├── ai.module.ts
+│   └── ai.service.ts            # Clasificación y detección de duplicados
+├── common/
+│   ├── filters/
+│   │   └── exceptions.filter.ts # Exception filter global
+│   └── interceptors/
+│       └── response.interceptor.ts  # Response interceptor global
+├── database/
+│   ├── database.module.ts
+│   └── database.service.ts      # Servicio de Prisma
+├── logs/
+│   ├── dto/
+│   │   └── response-logs.dto.ts
+│   ├── interfaces/
+│   │   ├── logs.repository.interface.ts
+│   │   └── logs.service.interface.ts
+│   ├── logs.constants.ts
+│   ├── logs.controller.ts
+│   ├── logs.module.ts
+│   ├── logs.repository.ts
+│   └── logs.service.ts
+├── sync/
+│   ├── data/
+│   │   └── venues.mock.ts       # Mock de bares tucumanos
+│   ├── interfaces/
+│   │   └── sync.service.interface.ts
+│   ├── sync.constants.ts
+│   ├── sync.controller.ts
+│   ├── sync.module.ts
+│   └── sync.service.ts          # Lógica de sincronización + cron job
+├── venues/
+│   ├── dto/
+│   │   ├── create-venues.dto.ts
+│   │   ├── get-venues.dto.ts
+│   │   ├── query-vanues.dto.ts
+│   │   ├── response-venues.dto.ts
+│   │   └── update-venues.dto.ts
+│   ├── interfaces/
+│   │   ├── venues.repository.interface.ts
+│   │   └── venues.service.interface.ts
+│   ├── mappers/
+│   │   └── venue.mapper.ts
+│   ├── venues.constants.ts
+│   ├── venues.controller.ts
+│   ├── venues.module.ts
+│   ├── venues.repository.ts
+│   └── venues.service.ts
+├── app.module.ts
+└── main.ts
 ```
 
-## Compile and run the project
+---
+
+## Módulos
+
+### `ai/` - Inteligencia Artificial
+
+Módulo responsable de integrar la API de Groq para dos tareas:
+
+- **Detección de duplicados**: Compara nombres de bares nuevos contra los existentes, detectando coincidencias semánticas (ej: "Bar Irlanda" = "Irlanda Bar")
+- **Clasificación**: Asigna categorías automáticamente (bar, boliche, café, restaurante, peña, resto-bar) y genera descripciones
+
+### `venues/` - Gestión de Bares
+
+Módulo principal del sistema que implementa el CRUD completo de bares:
+
+- Controller, Service y Repository con patrón de repositorio
+- Interfaces para inversión de dependencias
+- Mappers para transformación de datos
+- DTOs con validación usando `class-validator`
+- Paginación y filtros
+
+### `sync/` - Sincronización
+
+Automatización del proceso de obtención y procesamiento de bares:
+
+- Obtiene datos del mock (`venues.mock.ts`)
+- Detecta duplicados mediante IA
+- Clasifica nuevos bares
+- Registra resultados en logs
+- **Cron job** que se ejecuta cada hora
+- Endpoint manual para disparar sincronización
+
+### `logs/` - Historial de Sincronizaciones
+
+Registro de cada ejecución del proceso de sync:
+
+- Cantidad de bares nuevos agregados
+- Duplicados detectados
+- Timestamp de ejecución
+- Consultable vía API
+
+### `common/` - Utilidades Compartidas
+
+- **Exception Filter Global**: Manejo centralizado de errores
+- **Response Interceptor Global**: Formato estandarizado de respuestas
+
+### `database/` - Base de Datos
+
+- Wrapper del servicio de Prisma
+- Integración con PostgreSQL (Supabase)
+- Migraciones gestionadas por Prisma
+
+---
+
+## Endpoints de la API
+
+### Venues
+
+| Método | Endpoint | Descripción |
+|---|---|---|
+| `GET` | `/venues?page=1&limit=10&actives=true` | Listar bares con paginación |
+| `GET` | `/venues/:id` | Obtener bar por ID |
+| `POST` | `/venues` | Crear bar manualmente |
+| `PATCH` | `/venues/:id` | Actualizar bar |
+| `PATCH` | `/venues/:id` | Desactivar bar (soft delete) |
+
+### Sync
+
+| Método | Endpoint | Descripción |
+|---|---|---|
+| `POST` | `/sync` | Disparar sincronización manualmente |
+
+### Logs
+
+| Método | Endpoint | Descripción |
+|---|---|---|
+| `GET` | `/logs` | Obtener logs registrados |
+| `GET` | `/logs/:id` | Detalle de un log |
+
+---
+
+## Modelo de Datos
+
+### Tabla `venues`
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| id | UUID | Identificador único |
+| name | TEXT | Nombre del bar |
+| location | TEXT | Dirección |
+| category | TEXT | Clasificado por IA |
+| description | TEXT | Generado por IA |
+| source | TEXT | Origen del dato |
+| active | BOOLEAN | Soft delete |
+| obtainedAt | TIMESTAMP | Fecha de obtención |
+| createdAt | TIMESTAMP | Fecha de creación |
+| updatedAt | TIMESTAMP | Última actualización |
+
+### Tabla `logs`
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| id | UUID | Identificador único |
+| action | TEXT | Tipo de acción ejecutada |
+| newCount | INT | Bares nuevos agregados |
+| duplicates | INT | Duplicados detectados |
+| executedAt | TIMESTAMP | Fecha de ejecución |
+
+---
+
+## Instalación
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm install
 ```
 
-## Run tests
+## Variables de Entorno
+
+Crear un archivo `.env` basado en `.env.example`:
+
+```env
+DATABASE_URL="postgresql://..."
+GROQ_API_KEY="tu-api-key"
+```
+
+## Ejecución
 
 ```bash
-# unit tests
-$ npm run test
+# Desarrollo
+npm run start:dev
 
-# e2e tests
-$ npm run test:e2e
+# Producción
+npm run start:prod
 
-# test coverage
-$ npm run test:cov
+# Build
+npm run build
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## Base de Datos
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+# Aplicar migraciones
+npx prisma migrate deploy
+
+# Generar cliente
+npx prisma generate
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## Tests
 
-## Resources
+```bash
+# Unit tests
+npm run test
 
-Check out a few resources that may come in handy when working with NestJS:
+# E2E tests
+npm run test:e2e
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+# Coverage
+npm run test:cov
+```
 
-## Support
+## Docker
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+# Build
+docker build -t backend .
 
-## Stay in touch
+# Con docker-compose
+docker-compose up --build
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## Lint & Format
 
-## License
+```bash
+npm run lint
+npm run format
+```
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+---
+
+## Arquitectura
+
+El proyecto sigue una arquitectura por capas con el patrón de repositorio:
+
+```
+Controller → Service → Repository → Database
+                ↓
+              AI Service (Groq)
+```
+
+- **Inversión de dependencias**: Interfaces para services y repositories
+- **Validación**: DTOs con `class-validator` y `class-transformer`
+- **Modular**: Cada funcionalidad es un módulo independiente de NestJS
+
+---
+
+## Autor
+
+**Auchana Matías Leonel** - Estudiante de Ingeniería en Sistemas de Información
