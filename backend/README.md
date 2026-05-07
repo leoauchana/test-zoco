@@ -246,6 +246,119 @@ npm run test:e2e
 npm run test:cov
 ```
 
+## Testing de Servicios
+
+### Servicios Testeados
+
+El proyecto incluye **tests unitarios** para los cuatro servicios principales usando **Jest** y **@nestjs/testing**:
+
+#### 1. **AiService** (`src/ai/ai.service.spec.ts`)
+
+Pruebas de integración con la API de Groq para análisis de bares.
+
+| Test | Descripción |
+|---|---|
+| `analyzeVenue` - JSON parsing | Valida que la respuesta JSON de Groq se interprete correctamente |
+| `analyzeVenue` - Markdown cleanup | Verifica la limpieza de JSON embebido en markdown (```json...```) |
+| `analyzeVenue` - Fallback response | Confirma que devuelve respuesta por defecto si Groq falla |
+
+**Casos de uso:**
+- Clasificación automática de bares
+- Detección de duplicados semánticos
+- Recuperación ante fallos de API
+
+---
+
+#### 2. **VenuesService** (`src/venues/venues.service.spec.ts`)
+
+Pruebas del CRUD completo y validaciones de bares.
+
+| Test | Descripción |
+|---|---|
+| `findAll` - Paginación | Retorna bares paginados con total de registros |
+| `findAll` - Validación de página | Lanza error si el número de página es inválido (≤ 0) |
+| `create` - Creación exitosa | Agrega un nuevo bar sin duplicados |
+| `create` - Detección de duplicados | Lanza `ConflictException` si el bar ya existe |
+
+**Casos de uso:**
+- Listar y paginar bares
+- Crear nuevos bares con validación
+- Evitar duplicados manuales
+
+---
+
+#### 3. **SyncService** (`src/sync/sync.service.spec.ts`)
+
+Pruebas del proceso de sincronización automática con análisis de IA.
+
+| Test | Descripción |
+|---|---|
+| `run` - Sincronización exitosa | Crea nuevos bares y registra logs de éxito |
+| `run` - Duplicados detectados por IA | Salta creación si IA detecta duplicado |
+| `run` - Duplicados por conflicto | Cuenta como duplicado si `create` lanza `ConflictException` |
+
+**Casos de uso:**
+- Proceso automático de obtención de datos (mock)
+- Análisis con IA para filtrar duplicados
+- Registro de resultados en logs
+
+---
+
+#### 4. **LogsService** (`src/logs/logs.service.spec.ts`)
+
+Pruebas del registro y consulta de logs de sincronización.
+
+| Test | Descripción |
+|---|---|
+| `findAll` | Retorna todos los logs registrados |
+| `findOne` | Obtiene detalle de un log específico por ID |
+| `findOne` - Error | Lanza `NotFoundException` si el log no existe |
+| `create` - Creación exitosa | Registra nuevo log con acción y contadores |
+| `create` - Error de repositorio | Propaga errores de base de datos |
+
+**Casos de uso:**
+- Auditar sincronizaciones ejecutadas
+- Consultar estadísticas de procesos
+- Seguimiento de errores y duplicados
+
+---
+
+### Tecnologías de Testing
+
+- **Framework**: Jest
+- **Mocking**: Jest mocks para dependencias
+- **Módulos NestJS**: `Test`, `TestingModule` de `@nestjs/testing`
+- **Patrones**:
+  - Mock de repositorios y servicios inyectados
+  - Spies para verificar llamadas
+  - beforeEach para limpieza y setup
+
+### Ejecución de Tests
+
+```bash
+# Ejecutar todos los tests
+npm run test
+
+# Modo watch (re-ejecuta al cambiar archivos)
+npm run test:watch
+
+# Con coverage detallado
+npm run test:cov
+
+# Debug interactivo
+npm run test:debug
+```
+
+### Cobertura Esperada
+
+Los tests cubren:
+- ✅ Flujos exitosos (happy path)
+- ✅ Validaciones y errores
+- ✅ Integración entre servicios
+- ✅ Respuestas de APIs externas (mocked)
+
+---
+
 ## Docker
 
 ```bash

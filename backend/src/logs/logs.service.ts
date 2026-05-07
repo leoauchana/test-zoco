@@ -1,6 +1,6 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { LogResponseDto } from './dto/response-logs.dto';
-import { ILogsRepository } from './interfaces/logs.repository.interface';
+import type { ILogsRepository } from './interfaces/logs.repository.interface';
 import { ILogsService } from './interfaces/logs.service.interface';
 import { LOGS_REPOSITORY } from './logs.constants';
 

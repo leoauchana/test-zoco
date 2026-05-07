@@ -1,11 +1,11 @@
 import { ConflictException, Inject, Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { AI_SERVICE } from '../ai/ai.constants';
-import { IAiService } from '../ai/interfaces/ai.service.interface';
-import { ILogsService } from '../logs/interfaces/logs.service.interface';
+import type { IAiService } from '../ai/interfaces/ai.service.interface';
+import type { ILogsService } from '../logs/interfaces/logs.service.interface';
 import { LOGS_SERVICE } from '../logs/logs.constants';
 import { CreateVenueDto } from '../venues/dto/create-venues.dto';
-import { IVenuesService } from '../venues/interfaces/venues.service.interface';
+import type { IVenuesService } from '../venues/interfaces/venues.service.interface';
 import { VENUES_SERVICE } from '../venues/venues.constants';
 import { VENUES_MOCK } from './data/venues.mock';
 import { ISyncService } from './interfaces/sync.service.interface';
