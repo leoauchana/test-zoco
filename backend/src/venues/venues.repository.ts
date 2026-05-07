@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Venue } from '@prisma/client';
-import { DatabaseService } from 'src/database/database.service';
+import { DatabaseService } from '../database/database.service';
 import { CreateVenueDto } from './dto/create-venues.dto';
 import { UpdateVenueDto } from './dto/update-venues.dto';
 import { IVenuesRepository } from './interfaces/venues.repository.interface';
