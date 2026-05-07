@@ -348,7 +348,7 @@ Se usa una combinación de dos estrategias: primero se busca coincidencia exacta
 - Integrar Google Places API para obtener datos reales y actualizados
 - Agregar un sistema de aprobación manual antes de publicar bares
 - Normalizar direcciones usando una API de geocodificación
-- Implementar un score de confianza por venue
+- Implementar un score de confianza por bar
 
 ---
 
