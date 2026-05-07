@@ -1,4 +1,4 @@
-import { useEffect, useRef, cloneElement, Children, isValidElement, useState } from 'react';
+import { Children, cloneElement, isValidElement, useEffect, useRef, useState } from 'react';
 import { TabProvider } from '../../contexts/TabContext';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import type { UserPreferences } from '../../types';
@@ -19,7 +19,6 @@ export function Dashboard({ onSync, syncLoading = false, syncVersion = 0, childr
     lastTab: 'venues',
     venuesFilters: {
       status: 'all',
-      category: null,
     },
   };
 
