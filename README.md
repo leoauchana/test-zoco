@@ -334,6 +334,136 @@ Se usa una combinación de dos estrategias: primero se busca coincidencia exacta
 
 ---
 
+## 🎬 Flujo del Sistema - Capturas de Pantalla
+
+Esta sección muestra visualmente cómo funciona el sistema a través de sus diferentes pantallas.
+
+### 1. Pantalla Principal - Panel de Bares
+
+![Panel Inicial de Bares](screenshots/main.png)
+
+**Descripción:**
+Esta es la pantalla principal del dashboard donde se visualiza la lista de bares registrados. Se muestra una tabla vacía sin bares sincronizados, incluyendo:
+- **ID**: Identificador único del bar (UUID)
+- **Nombre**: Nombre del establecimiento
+- **Ubicación**: Dirección del local
+- **Categoría**: Clasificación automática por IA (Café, Pub, etc.)
+- **Descripción**: Texto generado automáticamente por IA
+- **Fuente**: Origen del dato (mock)
+- **Estado**: Activo/Inactivo
+- **Obtenido**: Fecha de sincronización (07/05/26)
+- **Acciones**: Botones para editar o desactivar
+
+### 2. Panel de Bares Actualizado - Post-Sincronización
+
+![Bares Registrados](screenshots/venues.png)
+
+**Descripción:**
+Después de ejecutar una sincronización, la tabla se actualiza con los nuevos bares. En esta captura se ven **5 bares completamente registrados**:
+
+1. **Fuente de Soda París** - Café (Congreso 43, Tucumán)
+2. **Distrito Club** - Club (Maipú 900, Tucumán)
+3. **Liverpool Pub** - Pub (Catamarca 550, Tucumán)
+4. **Coffee Point** - Café (San Juan 350, Tucumán)
+5. **Brooklyn Pub** - Pub (Mendoza 600, Tucumán)
+
+Todos tienen:
+- Estado: **Activo** ✓
+- Fuente: **mock** (datos de prueba)
+- Fecha de obtención: **07/05/26**
+
+Aparece un **mensaje de éxito** en verde indicando: "Sincronización completada - 5 nuevos bares, 0 duplicados"
+
+
+### 3. Registros de Sincronización - Historial de Logs
+
+![Registros de Sincronización](screenshots/logs.png)
+
+**Descripción:**
+Esta pantalla muestra el historial completo de sincronizaciones automáticas. Cada registro incluye:
+- **ID**: Identificador del log
+- **Acción**: Tipo de operación realizada (sync)
+- **Nuevos**: Cantidad de bares nuevos agregados en esa sincronización (5 nuevos bares)
+- **Duplicados**: Cantidad de duplicados detectados por la IA (0 duplicados)
+- **Fecha**: Cuándo se ejecutó la sincronización (07/05/26)
+
+El sistema registra automáticamente cada sincronización para auditoría y debugging. Los logs muestra 1 sincronizacion exitosa, con 5 bares nuevos agregados.
+
+### 4. Edición de Bar - Modal de Actualización
+
+![Editar Bar](screenshots/update.png)
+
+**Descripción:**
+Al hacer clic en el botón de editar, se abre un modal que permite modificar los datos de un bar. En este caso, se muestra la edición del bar "Distrito Club":
+
+- **Nombre**: Campo editable del nombre del bar
+- **Ubicación**: Campo editable de la dirección (Maipú 900, Tucumán)
+- **Categoría**: Selector desplegable para cambiar la categoría (Club, Bar, Café, Pub, etc.)
+
+El modal tiene:
+- **Botón Cancelar**: Descartar cambios sin guardar
+- **Botón Guardar Cambios**: Confirmar la actualización del bar
+
+Este flujo permite corregir datos mal clasificados por la IA o actualizar información incorrecta.
+
+### 5. Eliminación de un bar - Model de Eliminación
+
+![Sin Bares Registrados](screenshots/delete.png)
+
+**Descripción:**
+Esta pantalla muestra el **modal de confirmación para desactivar un bar**. Cuando el usuario hace clic en el botón de eliminar (X rojo) en la fila de un bar y aparece este diálogo de confirmación.
+
+Este flujo de confirmación es una buena práctica UX que evita eliminaciones accidentales. El bar no se borra de la base de datos, simplemente se marca como inactivo y puede recuperarse después filtrando por el estado "Inactivos".
+
+### 6. Filtros y Búsqueda - Vista Filtrada
+
+![Vista con Filtros](screenshots/filter.png)
+
+**Descripción:**
+El sistema permite filtrar los bares por **estado**:
+- El dropdown muestra la opción "Inactivos" seleccionada
+- La tabla muestra solo **1 bar inactivo**: "Fuente de Soda París"
+- El estado del bar aparece marcado en rojo: **Inactivo** ✗
+
+Este filtro es útil para:
+- Ver todos los bares inactivos/desactivados
+- Recuperar o revisar establecimientos eliminados lógicamente
+- Mantener una auditoría de bares removidos
+
+También existe el filtro "Todos" para ver la lista completa.
+
+### Flujo Completo de Interacción
+
+```
+1. Usuario inicia sesión en el dashboard
+    ↓
+2. Ve lista de bares (vacía si es primera vez)
+    ↓
+3. Hace clic en "Sincronizar" para obtener bares
+    ↓
+4. Backend ejecuta:
+    - Obtiene datos del mock
+    - IA detecta duplicados
+    - IA clasifica por categoría
+    - IA genera descripción
+    - Guarda en BD
+    - Registra en logs
+    ↓
+5. Frontend se actualiza automáticamente
+    ↓
+6. Usuario ve tabla llena con nuevos bares
+    ↓
+7. Puede:
+   - Editar un bar (cambiar nombre, ubicación, categoría)
+   - Desactivar un bar (soft delete)
+   - Filtrar por estado (Activos/Inactivos)
+   - Ver historial de sincronizaciones en "Registros"
+    ↓
+8. Los cambios se guardan en BD y se actualiza la UI
+```
+
+---
+
 ## Desarrollador del proyecto
 
 Auchana Matías Leonel -  Estudiante de Ingeniería en Sistemas de Información

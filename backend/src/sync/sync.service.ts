@@ -73,7 +73,6 @@ export class SyncService implements ISyncService {
           this.logger.warn(`Duplicado detectado al guardar: ${mock.name}`);
           duplicates++;
         } else {
-          // Otro error, lo re-lanzamos
           throw error;
         }
       }
