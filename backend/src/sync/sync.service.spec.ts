@@ -1,10 +1,9 @@
 import { ConflictException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-
-import { LOGS_SERVICE } from '../logs/logs.constants';
 import { VENUES_SERVICE } from '../venues/venues.constants';
 
 import { AI_SERVICE } from '../ai/ai.constants';
+import { LOGS_SERVICE } from '../logs/logs.constants';
 import { SyncService } from './sync.service';
 
 describe('SyncService', () => {
