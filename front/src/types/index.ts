@@ -24,6 +24,7 @@ export interface SyncResponse {
 
 export interface PaginatedResponse<T> {
   data: T[];
+  count: number;
   total: number;
   page: number;
   limit: number;
@@ -33,7 +34,6 @@ export interface UserPreferences {
   lastTab: 'venues' | 'logs';
   venuesFilters: {
     status: 'all' | 'active' | 'inactive';
-    category: string | null;
   };
 }
 

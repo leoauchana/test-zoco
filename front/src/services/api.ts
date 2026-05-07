@@ -43,6 +43,7 @@ export async function apiCall<T>(
 
     const result = await response.json();
     const data = result.response ?? result.data ?? result;
+    console.log(data as T);
     return data as T;
   } catch (error) {
     clearTimeout(timeoutId);

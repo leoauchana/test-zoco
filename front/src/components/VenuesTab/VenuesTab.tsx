@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTabContext } from '../../hooks/useTabContext';
 import { useVenues } from '../../hooks/useVenues';
-import { VENUE_CATEGORIES } from '../../utils/constants';
+import { useToast } from '../../hooks/useToast';
 import type { Venue } from '../../types';
 import { ConfirmationModal } from '../Shared/ConfirmationModal';
 import { LoadingSpinner } from '../Shared/LoadingSpinner';
@@ -17,6 +17,7 @@ interface VenuesTabProps {
 
 export function VenuesTab({ syncVersion = 0 }: VenuesTabProps) {
   const { activeTab } = useTabContext();
+  const { addToast } = useToast();
   const [editingVenue, setEditingVenue] = useState<Venue | null>(null);
   const [deactivatingVenue, setDeactivatingVenue] = useState<Venue | null>(null);
   const [isEditingSaving, setIsEditingSaving] = useState(false);
@@ -29,7 +30,6 @@ export function VenuesTab({ syncVersion = 0 }: VenuesTabProps) {
     limit,
     totalPages,
     status,
-    category,
     loading,
     error,
     refresh,
@@ -66,6 +66,10 @@ export function VenuesTab({ syncVersion = 0 }: VenuesTabProps) {
         location: updatedVenue.location,
         category: updatedVenue.category,
       });
+      addToast('Bar actualizado correctamente', 'success', 3000);
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Error al actualizar el bar';
+      addToast(`Error: ${errorMsg}`, 'error', 4000);
     } finally {
       setIsEditingSaving(false);
     }
@@ -81,8 +85,10 @@ export function VenuesTab({ syncVersion = 0 }: VenuesTabProps) {
     try {
       await deactivateVenue(deactivatingVenue.id);
       setDeactivatingVenue(null);
+      addToast(`"${deactivatingVenue.name}" desactivado correctamente`, 'success', 3000);
     } catch (err) {
-      alert(`Error al desactivar: ${err instanceof Error ? err.message : 'Error desconocido'}`);
+      const errorMsg = err instanceof Error ? err.message : 'Error desconocido';
+      addToast(`Error al desactivar: ${errorMsg}`, 'error', 4000);
     } finally {
       setIsDeactivatingSaving(false);
     }
@@ -107,13 +113,11 @@ export function VenuesTab({ syncVersion = 0 }: VenuesTabProps) {
     );
   }
 
-  const filterLabel = category
-    ? VENUE_CATEGORIES.find(c => c.value === category)?.label || category
-    : status === 'all'
-      ? 'Todos los bares'
-      : status === 'active'
-        ? 'Bares activos'
-        : 'Bares inactivos';
+  const filterLabel = status === 'all'
+    ? 'Todos los bares'
+    : status === 'active'
+      ? 'Bares activos'
+      : 'Bares inactivos';
 
   return (
     <div className="venues-card">
@@ -126,21 +130,19 @@ export function VenuesTab({ syncVersion = 0 }: VenuesTabProps) {
 
       <VenuesFilters
         status={status}
-        category={category}
-        onStatusChange={(newStatus) => setFilters(newStatus, category)}
-        onCategoryChange={(newCategory) => setFilters(status, newCategory)}
+        onStatusChange={(newStatus) => setFilters(newStatus)}
       />
 
       {loading && <div className="inline-loading"><LoadingSpinner message="Actualizando..." size="small" /></div>}
 
-      {(status !== 'all' || category) && (
+      {status !== 'all' && (
         <div className="filter-indicator">
           <span className="filter-dot"></span>
           <span className="filter-text">Filtrando: {filterLabel}</span>
           <button
             className="filter-clear-btn"
             onClick={() => {
-              setFilters('all', null);
+              setFilters('all');
             }}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14">
@@ -177,6 +179,7 @@ export function VenuesTab({ syncVersion = 0 }: VenuesTabProps) {
         venue={editingVenue}
         onClose={() => setEditingVenue(null)}
         onSave={handleSaveVenue}
+        onError={(errorMsg) => addToast(`Error: ${errorMsg}`, 'error', 4000)}
         isSaving={isEditingSaving}
       />
 

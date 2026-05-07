@@ -71,7 +71,6 @@ export function VenuePagination({
       <div className="pagination-left">
         <div className="pagination-info">
           <span className="pagination-range">{start}-{end}</span>
-          <span className="pagination-total">de {safeTotal} bares</span>
         </div>
 
         <div className="limit-selector">

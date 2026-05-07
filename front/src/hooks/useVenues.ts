@@ -7,7 +7,6 @@ export interface UseVenuesOptions {
   initialPage?: number;
   initialLimit?: number;
   initialStatus?: 'active' | 'inactive' | 'all';
-  initialCategory?: string | null;
 }
 
 export function useVenues(options: UseVenuesOptions = {}) {
@@ -15,7 +14,6 @@ export function useVenues(options: UseVenuesOptions = {}) {
     initialPage = PAGINATION.DEFAULT_PAGE,
     initialLimit = PAGINATION.DEFAULT_LIMIT,
     initialStatus = 'all',
-    initialCategory = null,
   } = options;
 
   const [venues, setVenues] = useState<Venue[]>([]);
@@ -23,38 +21,32 @@ export function useVenues(options: UseVenuesOptions = {}) {
   const [page, setPage] = useState(initialPage);
   const [limit, setLimit] = useState(initialLimit);
   const [status, setStatus] = useState<'active' | 'inactive' | 'all'>(initialStatus);
-  const [category, setCategory] = useState<string | null>(initialCategory);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const loadVenues = useCallback(async (
     pageNum: number,
     limitNum: number,
-    statusFilter: 'active' | 'inactive' | 'all',
-    categoryFilter: string | null
+    statusFilter: 'active' | 'inactive' | 'all'
   ) => {
     setLoading(true);
     setError(null);
 
     try {
       let actives: boolean | undefined;
-      let categoryParam: string | undefined;
 
-      if (categoryFilter) {
-        categoryParam = categoryFilter;
-      } else if (statusFilter !== 'all') {
+      if (statusFilter !== 'all') {
         actives = statusFilter === 'active';
       }
 
       const response = await venuesService.getVenues(
         pageNum,
         limitNum,
-        actives,
-        categoryParam
+        actives
       );
 
       setVenues(response.data);
-      setTotal(response.total ?? 0);
+      setTotal(response.count ?? 0);
       setPage(response.page ?? pageNum);
       setLimit(response.limit ?? limitNum);
     } catch (err) {
@@ -68,8 +60,8 @@ export function useVenues(options: UseVenuesOptions = {}) {
   }, []);
 
   useEffect(() => {
-    loadVenues(page, limit, status, category);
-  }, [page, limit, status, category, loadVenues]);
+    loadVenues(page, limit, status);
+  }, [page, limit, status, loadVenues]);
 
   const updateVenue = useCallback(async (id: string, data: Partial<Venue>) => {
     try {
@@ -107,21 +99,8 @@ export function useVenues(options: UseVenuesOptions = {}) {
     }
   }, []);
 
-  const setFilters = useCallback((
-    newStatus?: 'active' | 'inactive' | 'all',
-    newCategory?: string | null
-  ) => {
-    if (newCategory) {
-      setCategory(newCategory);
-      setStatus('all');
-    } else if (newStatus !== undefined) {
-      setStatus(newStatus);
-      if (newCategory === null) {
-        setCategory(null);
-      }
-    } else if (newCategory === null) {
-      setCategory(null);
-    }
+  const setFilters = useCallback((newStatus: 'active' | 'inactive' | 'all') => {
+    setStatus(newStatus);
     setPage(1);
   }, []);
 
@@ -151,8 +130,8 @@ export function useVenues(options: UseVenuesOptions = {}) {
   const totalPages = limit > 0 ? Math.ceil(total / limit) : 0;
 
   const refresh = useCallback(() => {
-    loadVenues(page, limit, status, category);
-  }, [page, limit, status, category, loadVenues]);
+    loadVenues(page, limit, status);
+  }, [page, limit, status, loadVenues]);
 
   return {
     venues,
@@ -161,7 +140,6 @@ export function useVenues(options: UseVenuesOptions = {}) {
     limit,
     totalPages,
     status,
-    category,
     loading,
     error,
     loadVenues,

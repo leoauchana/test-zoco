@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import type { Venue } from '../../types';
 import { VENUE_CATEGORIES } from '../../utils/constants';
 import { getErrorMessage, validateVenueForm } from '../../utils/validators';
@@ -9,6 +9,7 @@ interface EditVenueModalProps {
   venue: Venue | null;
   onClose: () => void;
   onSave: (venue: Venue) => Promise<void>;
+  onError?: (error: string) => void;
   isSaving?: boolean;
 }
 
@@ -17,6 +18,7 @@ export function EditVenueModal({
   venue,
   onClose,
   onSave,
+  onError,
   isSaving = false,
 }: EditVenueModalProps) {
   const [name, setName] = useState('');
@@ -72,7 +74,12 @@ export function EditVenueModal({
       onClose();
     } catch (error) {
       console.error('Error saving venue:', error);
-      alert(`Error al guardar: ${getErrorMessage(error)}`);
+      const errorMsg = getErrorMessage(error);
+      if (onError) {
+        onError(errorMsg);
+      } else {
+        alert(`Error al guardar: ${errorMsg}`);
+      }
     }
   };
 

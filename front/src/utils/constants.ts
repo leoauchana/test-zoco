@@ -2,7 +2,6 @@ export const API_BASE_URL = 'http://localhost:3000';
 
 export const API_ENDPOINTS = {
   VENUES: '/venues',
-  VENUES_BY_CATEGORY: (category: string) => `/venues/category/${category}`,
   VENUE_BY_ID: (id: string) => `/venues/${id}`,
   VENUE_DEACTIVATE: (id: string) => `/venues/${id}/desactivate`,
   LOGS: '/logs',
@@ -12,7 +11,7 @@ export const API_ENDPOINTS = {
 export const PAGINATION = {
   DEFAULT_LIMIT: 10,
   DEFAULT_PAGE: 1,
-  OPTIONS: [10, 25, 50, 100],
+  OPTIONS: [5, 10],
 } as const;
 
 export const STORAGE_KEYS = {

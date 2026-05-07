@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import './Header.css';
 
 export interface HeaderProps {
@@ -7,16 +6,11 @@ export interface HeaderProps {
 }
 
 export function Header({ onSync, syncLoading = false }: HeaderProps) {
-  const [isSyncing, setIsSyncing] = useState(false);
-
   const handleSync = async () => {
-    setIsSyncing(true);
     try {
       await onSync();
     } catch (error) {
       console.error('Sync error:', error);
-    } finally {
-      setIsSyncing(false);
     }
   };
 
@@ -32,9 +26,9 @@ export function Header({ onSync, syncLoading = false }: HeaderProps) {
           <button
             className="btn-sync"
             onClick={handleSync}
-            disabled={isSyncing || syncLoading}
+            disabled={syncLoading}
           >
-            {isSyncing || syncLoading ? (
+            {syncLoading ? (
               <>
                 <span className="spinner-icon"></span>
                 Sincronizando...

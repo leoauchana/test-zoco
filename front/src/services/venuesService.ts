@@ -5,17 +5,8 @@ import { apiDelete, apiGet, apiPatch } from './api';
 export async function getVenues(
   page: number = 1,
   limit: number = 10,
-  actives?: boolean,
-  category?: string
+  actives?: boolean
 ): Promise<PaginatedResponse<Venue>> {
-  if (category) {
-    const params = new URLSearchParams();
-    params.append('page', page.toString());
-    params.append('limit', limit.toString());
-    const endpoint = `${API_ENDPOINTS.VENUES_BY_CATEGORY(category)}?${params.toString()}`;
-    return apiGet<PaginatedResponse<Venue>>(endpoint);
-  }
-
   const params = new URLSearchParams();
   params.append('page', page.toString());
   params.append('limit', limit.toString());
