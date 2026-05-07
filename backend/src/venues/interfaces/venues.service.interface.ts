@@ -3,23 +3,11 @@ import { VenueResponseDto } from '../dto/response-venues.dto';
 import { UpdateVenueDto } from '../dto/update-venues.dto';
 
 export interface IVenuesService {
-  findByCategory(
-    category: string,
-    page?: number,
-    limit?: number,
-  ): Promise<VenueResponseDto[]>;
   findAll(
     page?: number,
     limit?: number,
     actives?: boolean,
-  ): Promise<VenueResponseDto[]>;
-
-  findByCategory(
-    category: string,
-    page?: number,
-    limit?: number,
-    actives?: boolean,
-  ): Promise<VenueResponseDto[]>;
+  ): Promise<{ data: VenueResponseDto[]; total: number }>;
 
   findOne(id: string): Promise<VenueResponseDto>;
 

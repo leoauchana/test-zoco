@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { ConflictException, Inject, Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { AiService } from '../ai/ai.service';
 import { ILogsService } from '../logs/interfaces/logs.service.interface';
@@ -35,14 +35,14 @@ export class SyncService implements ISyncService {
 
     const existings = await this.venuesService.findAll();
 
-    const venuesForCheck = existings.map((v) => ({
+    const venuesForCheck = existings.data.map((v) => ({
       id: v.id,
       name: v.name,
     }));
 
     const randomVenues = [...VENUES_MOCK]
       .sort(() => Math.random() - 0.5)
-      .slice(0, 3);
+      .slice(0, 5);
     for (const mock of randomVenues) {
       const analysis = await this.aiService.analyzeVenue(
         mock.name,
@@ -62,11 +62,19 @@ export class SyncService implements ISyncService {
         category: analysis.category,
         description: analysis.description,
       };
-
-      await this.venuesService.create(newVenue);
-
-      this.logger.log(`New venue added: ${mock.name}`);
-      news++;
+      try {
+        await this.venuesService.create(newVenue);
+        this.logger.log(`Nuevo venue agregado: ${mock.name}`);
+        news++;
+      } catch (error) {
+        if (error instanceof ConflictException) {
+          this.logger.warn(`Duplicado detectado al guardar: ${mock.name}`);
+          duplicates++;
+        } else {
+          // Otro error, lo re-lanzamos
+          throw error;
+        }
+      }
     }
 
     await this.logsService.create('sync', news, duplicates);

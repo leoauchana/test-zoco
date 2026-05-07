@@ -26,34 +26,14 @@ export class VenuesService implements IVenuesService {
     page: number = 1,
     limit: number = 10,
     actives?: boolean,
-  ): Promise<VenueResponseDto[]> {
-    console.log(page, limit, actives);
+  ): Promise<{ data: VenueResponseDto[]; total: number }> {
     this.validatePagination(page, limit);
+    const total = await this.venuesRepository.count(actives);
     const venues = await this.venuesRepository.findAll(page, limit, actives);
-    return this.venueMapper.toPrismaToResponseArray(venues);
-  }
-
-  async findByCategory(
-    category: string,
-    page: number = 1,
-    limit: number = 10,
-    actives?: boolean,
-  ): Promise<VenueResponseDto[]> {
-    this.validateCategory(category);
-    this.validatePagination(page, limit);
-
-    const venues = await this.venuesRepository.findCategory(
-      category,
-      page,
-      limit,
-      actives,
-    );
-
-    if (venues.length === 0) {
-      return [];
-    }
-
-    return this.venueMapper.toPrismaToResponseArray(venues);
+    return {
+      data: this.venueMapper.toPrismaToResponseArray(venues),
+      total,
+    };
   }
 
   async findOne(id: string): Promise<VenueResponseDto> {

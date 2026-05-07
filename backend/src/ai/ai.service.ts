@@ -52,7 +52,7 @@ Dirección: "${location}"
 2. Si no lo es, clasificá el venue.
 
 Categorías posibles:
-bar, boliche, café, restaurante, peña, resto-bar, otro
+'bar' | 'club' | 'pub' | 'nightclub' | 'lounge' | 'cafe';
 
 Respondé SOLO con JSON:
 

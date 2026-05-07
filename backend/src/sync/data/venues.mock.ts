@@ -5,17 +5,12 @@ export interface VenueMock {
 }
 
 export const VENUES_MOCK: VenueMock[] = [
-  {
-    name: 'Bar El Cairo',
-    location: 'San Martín 400, Centro, Tucumán',
-    source: 'mock',
-  },
+  { name: 'Bar El Cairo', location: 'San Martín 400, Tucumán', source: 'mock' },
   {
     name: 'Antares Tucumán',
-    location: 'Av. Solano Vera 100, Tucumán',
+    location: 'Av. Solano Vera 100, Yerba Buena',
     source: 'mock',
   },
-  { name: 'El Cairo Bar', location: 'San Martín 400, Tucumán', source: 'mock' }, // duplicado intencional
   {
     name: 'Fuente de Soda París',
     location: 'Congreso 43, Tucumán',
@@ -37,27 +32,71 @@ export const VENUES_MOCK: VenueMock[] = [
     location: '25 de Mayo 700, Tucumán',
     source: 'mock',
   },
-  {
-    name: 'Irlanda Bar Tucumán',
-    location: '25 de Mayo 700, Tucumán',
-    source: 'mock',
-  }, // duplicado intencional
-  { name: 'El Que Canta', location: 'Mendoza 1200, Tucumán', source: 'mock' },
   { name: 'Café del Tiempo', location: 'Muñecas 500, Tucumán', source: 'mock' },
+
+  { name: 'Temple Bar', location: 'San Lorenzo 430, Tucumán', source: 'mock' },
   {
-    name: 'Boliche Mandarine',
+    name: 'Sky Room',
+    location: 'Av. Aconquija 1800, Yerba Buena',
+    source: 'mock',
+  },
+  {
+    name: 'Velvet Lounge',
+    location: 'Av. Perón 2100, Yerba Buena',
+    source: 'mock',
+  },
+  { name: 'Distrito Club', location: 'Maipú 900, Tucumán', source: 'mock' },
+  {
+    name: 'Moonlight Disco',
     location: 'Av. Roca 1500, Tucumán',
     source: 'mock',
   },
   {
-    name: 'La Peña del Angel',
-    location: 'San Lorenzo 200, Tucumán',
+    name: 'Neon Night Club',
+    location: 'Av. Mate de Luna 2400, Tucumán',
+    source: 'mock',
+  },
+  { name: 'Brooklyn Pub', location: 'Mendoza 600, Tucumán', source: 'mock' },
+  {
+    name: 'Old Irish Pub',
+    location: '25 de Mayo 680, Tucumán',
+    source: 'mock',
+  },
+  { name: 'Coffee Point', location: 'San Juan 350, Tucumán', source: 'mock' },
+  {
+    name: 'Café Central',
+    location: '24 de Septiembre 520, Tucumán',
     source: 'mock',
   },
   {
-    name: 'Resto Bar Happening',
-    location: 'Av. Aconquija 800, Yerba Buena',
+    name: 'Sunset Rooftop',
+    location: 'Av. Solano Vera 1900, Yerba Buena',
     source: 'mock',
   },
-  { name: 'El Batán', location: 'Las Piedras 400, Tucumán', source: 'mock' },
+  {
+    name: 'Black Room Club',
+    location: 'Las Heras 800, Tucumán',
+    source: 'mock',
+  },
+  { name: 'Urban Beat', location: 'General Paz 450, Tucumán', source: 'mock' },
+  { name: 'La Bohemia', location: 'Monteagudo 320, Tucumán', source: 'mock' },
+  { name: 'Liverpool Pub', location: 'Catamarca 550, Tucumán', source: 'mock' },
+  {
+    name: 'Havana Lounge',
+    location: 'Av. Presidente Perón 2500, Yerba Buena',
+    source: 'mock',
+  },
+  {
+    name: 'Mandarine Club',
+    location: 'Av. Roca 1520, Tucumán',
+    source: 'mock',
+  },
+
+  // duplicados intencionales para probar deduplicación
+  { name: 'Mandarine', location: 'Av. Roca 1500, Tucumán', source: 'mock' },
+  {
+    name: 'Irish Pub Tucumán',
+    location: '25 de Mayo 700, Tucumán',
+    source: 'mock',
+  },
 ];

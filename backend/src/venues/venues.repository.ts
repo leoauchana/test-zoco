@@ -8,24 +8,6 @@ import { IVenuesRepository } from './interfaces/venues.repository.interface';
 @Injectable()
 export class VenuesRepository implements IVenuesRepository {
   constructor(private readonly databaseService: DatabaseService) {}
-  findCategory(
-    category: string,
-    page?: number,
-    limit?: number,
-    actives?: boolean,
-  ): Promise<Venue[]> {
-    return this.databaseService.venue.findMany({
-      where: {
-        category: {
-          equals: category,
-          mode: 'insensitive',
-        },
-        active: actives !== undefined ? actives : undefined,
-      },
-      skip: page && limit ? (page - 1) * limit : undefined,
-      take: limit,
-    });
-  }
   async findAll(
     page?: number,
     limit?: number,
@@ -39,6 +21,13 @@ export class VenuesRepository implements IVenuesRepository {
       take: limit,
     });
     return venues;
+  }
+  count(actives?: boolean): Promise<number> {
+    return this.databaseService.venue.count({
+      where: {
+        ...(actives !== undefined && { active: actives }),
+      },
+    });
   }
   async findOne(id: string): Promise<Venue | null> {
     const venueFound = await this.databaseService.venue.findUnique({

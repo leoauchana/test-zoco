@@ -25,7 +25,6 @@ export class VenuesController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createVenueDto: CreateVenueDto) {
-    console.log('Creating venue...');
     return {
       data: await this.venuesService.create(createVenueDto),
       message: 'Local creado exitosamente',
@@ -37,21 +36,15 @@ export class VenuesController {
     const { page, limit, actives } = queryDto;
     const activosFilter =
       actives === 'true' ? true : actives === 'false' ? false : undefined;
+    const venuesFound = await this.venuesService.findAll(
+      page,
+      limit,
+      activosFilter,
+    );
     return {
       success: true,
-      data: await this.venuesService.findAll(page, limit, activosFilter),
-    };
-  }
-
-  @Get('category/:categoria')
-  async findByCategory(
-    @Param('categoria') category: string,
-    @Query() queryDto: QueryVenuesDto,
-  ) {
-    const { page, limit } = queryDto;
-    return {
-      success: true,
-      data: await this.venuesService.findByCategory(category, page, limit),
+      data: venuesFound.data,
+      count: venuesFound.total,
     };
   }
 
