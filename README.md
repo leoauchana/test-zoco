@@ -432,38 +432,6 @@ Este filtro es útil para:
 
 También existe el filtro "Todos" para ver la lista completa.
 
-### Flujo Completo de Interacción
-
-```
-1. Usuario inicia sesión en el dashboard
-    ↓
-2. Ve lista de bares (vacía si es primera vez)
-    ↓
-3. Hace clic en "Sincronizar" para obtener bares
-    ↓
-4. Backend ejecuta:
-    - Obtiene datos del mock
-    - IA detecta duplicados
-    - IA clasifica por categoría
-    - IA genera descripción
-    - Guarda en BD
-    - Registra en logs
-    ↓
-5. Frontend se actualiza automáticamente
-    ↓
-6. Usuario ve tabla llena con nuevos bares
-    ↓
-7. Puede:
-   - Editar un bar (cambiar nombre, ubicación, categoría)
-   - Desactivar un bar (soft delete)
-   - Filtrar por estado (Activos/Inactivos)
-   - Ver historial de sincronizaciones en "Registros"
-    ↓
-8. Los cambios se guardan en BD y se actualiza la UI
-```
-
----
-
 ## Desarrollador del proyecto
 
 Auchana Matías Leonel -  Estudiante de Ingeniería en Sistemas de Información
