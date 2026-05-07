@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import Groq from 'groq-sdk';
+import { IAiService } from './interfaces/ai.service.interface';
 
 interface Classification {
   category: string;
@@ -17,7 +18,7 @@ interface VenueAnalysis extends Classification {
 }
 
 @Injectable()
-export class AiService {
+export class AiService implements IAiService {
   private readonly logger = new Logger(AiService.name);
   private readonly groq: Groq;
 

@@ -1,6 +1,7 @@
 import { ConflictException, Inject, Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { AiService } from '../ai/ai.service';
+import { AI_SERVICE } from '../ai/ai.constants';
+import { IAiService } from '../ai/interfaces/ai.service.interface';
 import { ILogsService } from '../logs/interfaces/logs.service.interface';
 import { LOGS_SERVICE } from '../logs/logs.constants';
 import { CreateVenueDto } from '../venues/dto/create-venues.dto';
@@ -18,7 +19,8 @@ export class SyncService implements ISyncService {
     private readonly venuesService: IVenuesService,
     @Inject(LOGS_SERVICE)
     private readonly logsService: ILogsService,
-    private readonly aiService: AiService,
+    @Inject(AI_SERVICE)
+    private readonly aiService: IAiService,
   ) {}
 
   @Cron(CronExpression.EVERY_HOUR)
