@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { AiModule } from 'src/ai/ai.module';
-import { LogsModule } from 'src/logs/logs.module';
-import { VenuesModule } from 'src/venues/venues.module';
+import { AiModule } from '../ai/ai.module';
+import { LogsModule } from '../logs/logs.module';
+import { VenuesModule } from '../venues/venues.module';
 import { SYNC_SERVICE } from './sync.constants';
 import { SyncController } from './sync.controller';
 import { SyncService } from './sync.service';
