@@ -38,6 +38,24 @@ Este sistema permite gestionar bares de Tucumán de forma automatizada. El siste
 | React + TypeScript | UI del dashboard |
 | Vite | Build tool |
 
+### DevOps & CI/CD
+| Tecnología | Uso |
+|---|---|
+| GitHub Actions | Integración continua y automatización |
+| Docker | Contenedorización y despliegue |
+| Docker Compose | Orquestación local de contenedores |
+
+**Pipeline de CI:**
+- **Trigger**: Push a `main` o Pull Request a `main` o Manual
+- **Pasos**:
+  1. Checkout del repositorio
+  2. Setup Node.js v20.17.0
+  3. Instalación de dependencias (`npm ci`)
+  4. Ejecución de tests (`npm run test`)
+  5. Build del proyecto (`npm run build`)
+
+El pipeline asegura que todo nuevo código tenga tests pasando y se compile correctamente antes de ser mergeado.
+
 ---
 
 ## Estructura del Proyecto
